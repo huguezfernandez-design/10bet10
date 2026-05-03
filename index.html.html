@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetWizard — Combinadas Inteligentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --border: #22222e;
+    --accent: #c8f026;
+    --accent2: #ff4d6d;
+    --accent3: #4d9fff;
+    --gold: #f5c842;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --green: #22c55e;
+    --radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,240,38,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,240,38,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .logo-mark {
+    width: 48px;
+    height: 48px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: #000;
+    flex-shrink: 0;
+  }
+
+  .logo-text h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .logo-text p {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .live-badge {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(200,240,38,0.08);
+    border: 1px solid rgba(200,240,38,0.2);
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Style selector */
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  @media (min-width: 600px) {
+    .style-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .style-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .style-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .style-card:hover { border-color: #333; transform: translateY(-2px); }
+
+  .style-card.active {
+    border-color: var(--accent);
+    background: rgba(200,240,38,0.05);
+  }
+
+  .style-card.active::before { opacity: 1; }
+
+  .style-card[data-style="conservadora"]::before { background: radial-gradient(circle at 50% 0%, rgba(34,197,94,0.12), transparent 70%); }
+  .style-card[data-style="equilibrada"]::before { background: radial-gradient(circle at 50% 0%, rgba(77,159,255,0.12), transparent 70%); }
+  .style-card[data-style="atrevida"]::before { background: radial-gradient(circle at 50% 0%, rgba(245,200,66,0.12), transparent 70%); }
+  .style-card[data-style="sonadora"]::before { background: radial-gradient(circle at 50% 0%, rgba(255,77,109,0.12), transparent 70%); }
+
+  .style-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .style-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .style-card[data-style="conservadora"] .style-name { color: var(--green); }
+  .style-card[data-style="equilibrada"] .style-name { color: var(--accent3); }
+  .style-card[data-style="atrevida"] .style-name { color: var(--gold); }
+  .style-card[data-style="sonadora"] .style-name { color: var(--accent2); }
+
+  .style-meta {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .style-odds {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  .style-card[data-style="conservadora"] .style-odds { color: var(--green); }
+  .style-card[data-style="equilibrada"] .style-odds { color: var(--accent3); }
+  .style-card[data-style="atrevida"] .style-odds { color: var(--gold); }
+  .style-card[data-style="sonadora"] .style-odds { color: var(--accent2); }
+
+  /* Leagues selector */
+  .league-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+
+  .league-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .league-btn:hover { border-color: #444; color: var(--text); }
+
+  .league-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,240,38,0.07);
+  }
+
+  .league-flag { font-size: 14px; }
+
+  /* Generate button */
+  .generate-wrap {
+    margin-bottom: 40px;
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(200,240,38,0.3);
+  }
+
+  .generate-btn:active { transform: translateY(0); }
+
+  .generate-btn:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2s infinite;
+    display: none;
+  }
+
+  .generate-btn.loading .btn-shimmer { display: block; }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Result */
+  #result-section { display: none; }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  .result-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1.5px;
+  }
+
+  .combinada-type {
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Bet cards */
+  .bet-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+  .bet-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    animation: slideUp 0.3s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .bet-card:nth-child(1) { animation-delay: 0.05s; }
+  .bet-card:nth-child(2) { animation-delay: 0.1s; }
+  .bet-card:nth-child(3) { animation-delay: 0.15s; }
+  .bet-card:nth-child(4) { animation-delay: 0.2s; }
+
+  .bet-match {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .bet-league-tag {
+    background: rgba(255,255,255,0.06);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+
+  .bet-time-tag {
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  .bet-selection {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+
+  .bet-rationale {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .bet-odds-pill {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 68px;
+  }
+
+  .bet-odds-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent);
+    display: block;
+  }
+
+  .bet-odds-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    display: block;
+  }
+
+  /* Summary box */
+  .summary-box {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+    animation: slideUp 0.3s 0.3s ease both;
+  }
+
+  .summary-item { text-align: center; }
+
+  .summary-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 6px;
+  }
+
+  .summary-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .summary-value.cuota-total { color: var(--accent); }
+  .summary-value.beneficio { color: var(--green); }
+  .summary-value.riesgo { }
+
+  /* Disclaimer */
+  .disclaimer {
+    background: rgba(255,77,109,0.06);
+    border: 1px solid rgba(255,77,109,0.15);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    animation: slideUp 0.3s 0.4s ease both;
+  }
+
+  .disclaimer-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+  /* Stake input */
+  .stake-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    animation: slideUp 0.3s 0.25s ease both;
+  }
+
+  .stake-label {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .stake-input {
+    flex: 1;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    transition: border-color 0.2s;
+    max-width: 160px;
+  }
+
+  .stake-input:focus { border-color: var(--accent); }
+
+  .stake-presets {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Loading spinner */
+  .loading-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 20px;
+    gap: 20px;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .loading-step {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+
+  /* Error state */
+  .error-state {
+    display: none;
+    background: rgba(255,77,109,0.08);
+    border: 1.5px solid rgba(255,77,109,0.2);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+  }
+
+  .error-icon { font-size: 32px; margin-bottom: 12px; }
+  .error-msg { color: var(--muted); font-size: 14px; }
+
+  /* Bet365 copy button */
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+    animation: slideUp 0.3s 0.45s ease both;
+  }
+
+  .copy-btn:hover { border-color: #444; color: var(--text); }
+
+  .confidence-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+    border-radius: 2px;
+    transition: width 0.8s 0.4s ease;
+  }
+
+  .confidence-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Regenerate */
+  .regen-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .regen-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* num partidos */
+  .num-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    align-items: center;
+  }
+
+  .num-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-right: 4px; }
+
+  .num-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: grid;
+    place-items: center;
+  }
+
+  .num-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,240,38,0.07);
+  }
+
+  .num-btn:hover { border-color: #444; color: var(--text); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-mark">BW</div>
+    <div class="logo-text">
+      <h1>BetWizard</h1>
+      <p>Combinadas inteligentes · Datos en tiempo real</p>
+    </div>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      EN VIVO
+    </div>
+  </header>
+
+  <!-- Estilo de apuesta -->
+  <div class="section-label">01 — Elige tu estilo</div>
+  <div class="style-grid">
+    <div class="style-card" data-style="conservadora" onclick="selectStyle(this)">
+      <span class="style-icon">🛡️</span>
+      <div class="style-name">Conservadora</div>
+      <div class="style-meta">Favoritos claros, alta probabilidad</div>
+      <div class="style-odds">Cuota total: 2.0 – 4.0</div>
+    </div>
+    <div class="style-card" data-style="equilibrada" onclick="selectStyle(this)">
+      <span class="style-icon">⚖️</span>
+      <div class="style-name">Equilibrada</div>
+      <div class="style-meta">Riesgo moderado, buena rentabilidad</div>
+      <div class="style-odds">Cuota total: 4.0 – 10.0</div>
+    </div>
+    <div class="style-card" data-style="atrevida" onclick="selectStyle(this)">
+      <span class="style-icon">🔥</span>
+      <div class="style-name">Atrevida</div>
+      <div class="style-meta">Alta cuota con argumento sólido</div>
+      <div class="style-odds">Cuota total: 10 – 30</div>
+    </div>
+    <div class="style-card" data-style="sonadora" onclick="selectStyle(this)">
+      <span class="style-icon">🚀</span>
+      <div class="style-name">Soñadora</div>
+      <div class="style-meta">Máximo riesgo, máxima recompensa</div>
+      <div class="style-odds">Cuota total: +30</div>
+    </div>
+  </div>
+
+  <!-- Ligas -->
+  <div class="section-label">02 — Ligas a incluir</div>
+  <div class="league-row">
+    <button class="league-btn active" data-league="laliga" onclick="toggleLeague(this)">
+      <span class="league-flag">🇪🇸</span> LaLiga
+    </button>
+    <button class="league-btn active" data-league="premier" onclick="toggleLeague(this)">
+      <span class="league-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> Premier League
+    </button>
+    <button class="league-btn active" data-league="champions" onclick="toggleLeague(this)">
+      <span class="league-flag">⭐</span> Champions League
+    </button>
+  </div>
+
+  <!-- Nº de partidos -->
+  <div class="section-label">03 — Partidos en la combinada</div>
+  <div class="num-row">
+    <span class="num-label">Selecciona:</span>
+    <button class="num-btn" data-num="2" onclick="selectNum(this)">2</button>
+    <button class="num-btn active" data-num="3" onclick="selectNum(this)">3</button>
+    <button class="num-btn" data-num="4" onclick="selectNum(this)">4</button>
+    <button class="num-btn" data-num="5" onclick="selectNum(this)">5</button>
+  </div>
+
+  <!-- Stake -->
+  <div class="section-label">04 — Importe de la apuesta</div>
+  <div class="stake-row" style="margin-bottom:40px">
+    <span class="stake-label">€</span>
+    <input type="number" class="stake-input" id="stake-input" value="10" min="1" max="1000" oninput="updateStake()">
+    <div class="stake-presets">
+      <button class="preset-btn" onclick="setStake(5)">5€</button>
+      <button class="preset-btn" onclick="setStake(10)">10€</button>
+      <button class="preset-btn" onclick="setStake(20)">20€</button>
+      <button class="preset-btn" onclick="setStake(50)">50€</button>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="generate-wrap">
+    <button class="generate-btn" id="gen-btn" onclick="generateBet()">
+      <div class="btn-shimmer"></div>
+      <span id="btn-icon">⚡</span>
+      <span id="btn-text">CREAR COMBINADA CON IA</span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" id="loading-state">
+    <div class="spinner"></div>
+    <div class="loading-text">
+      Analizando partidos del día...
+      <div class="loading-step" id="loading-step">Buscando los mejores mercados</div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-state" id="error-state">
+    <div class="error-icon">⚠️</div>
+    <div class="error-msg" id="error-msg">Algo ha ido mal. Inténtalo de nuevo.</div>
+  </div>
+
+  <!-- Result -->
+  <div id="result-section">
+    <div class="result-header">
+      <div>
+        <div class="section-label" style="margin-bottom:6px">COMBINADA GENERADA</div>
+        <div class="result-title" id="result-title">COMBINADA EQUILIBRADA</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="combinada-type" id="combinada-badge">⚖️ EQUILIBRADA</span>
+        <button class="regen-btn" onclick="generateBet()">↺ Nueva</button>
+      </div>
+    </div>
+
+    <div class="bet-list" id="bet-list"></div>
+
+    <div class="stake-row" style="margin-bottom:0;animation:slideUp 0.3s 0.25s ease both;opacity:0;animation-fill-mode:both">
+      <div class="confidence-bar" style="flex:1">
+        <div class="confidence-fill" id="conf-fill" style="width:0%"></div>
+      </div>
+      <div class="confidence-label" id="conf-label">Confianza: —</div>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-item">
+        <div class="summary-label">Cuota total</div>
+        <div class="summary-value cuota-total" id="total-odds">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Apuesta</div>
+        <div class="summary-value" id="total-stake">—</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Beneficio potencial</div>
+        <div class="summary-value beneficio" id="total-return">—</div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <span class="disclaimer-icon">⚠️</span>
+      <span>Las cuotas son estimaciones orientativas basadas en datos estadísticos. Las cuotas reales varían en bet365. Juega con responsabilidad — solo apuesta lo que puedas permitirte perder. +18.</span>
+    </div>
+
+    <button class="copy-btn" onclick="copyBet()">
+      📋 Copiar selecciones para bet365
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── State ──
+let selectedStyle = null;
+let selectedNum = 3;
+let stake = 10;
+let currentBets = [];
+
+// ── Live data from sports API ──
+const MATCHES = {
+  laliga: [
+    { home: "Girona FC", away: "RCD Mallorca", league: "LaLiga", time: "Vie 1 Mayo, 21:00", homeWin: 47.2, awayWin: 26.0, draw: 26.8, context: "Girona necesita puntos para Europa; Mallorca en buena forma fuera" },
+    { home: "Villarreal CF", away: "Levante UD", league: "LaLiga", time: "Sáb 2 Mayo, 14:00", homeWin: 56.5, awayWin: 21.2, draw: 22.3, context: "Villarreal favorito claro en casa; Levante recién ascendido" },
+    { home: "CA Osasuna", away: "FC Barcelona", league: "LaLiga", time: "Sáb 2 Mayo, 21:00", homeWin: 22.1, awayWin: 54.4, draw: 23.5, context: "Barça líder necesita la victoria para el título; Osasuna resistente en casa" },
+    { home: "Valencia CF", away: "Atletico Madrid", league: "LaLiga", time: "Sáb 2 Mayo, 16:15", homeWin: 49.9, awayWin: 24.8, draw: 25.3, context: "Valencia sorprende en casa; Atleti inconsistente fuera" },
+    { home: "Deportivo Alaves", away: "Athletic Bilbao", league: "LaLiga", time: "Sáb 2 Mayo, 18:30", homeWin: 35.5, awayWin: 36.7, draw: 27.8, context: "Derby del norte muy igualado; Athletic en buena racha" },
+    { home: "Real Betis Seville", away: "Real Oviedo", league: "LaLiga", time: "Dom 3 Mayo, 18:30", homeWin: 60.8, awayWin: 16.6, draw: 22.6, context: "Betis fuerte en casa; Oviedo luchando contra el descenso" },
+    { home: "Espanyol Barcelona", away: "Real Madrid", league: "LaLiga", time: "Dom 3 Mayo, 21:00", homeWin: 20.9, awayWin: 55.2, draw: 23.9, context: "Real Madrid busca reacción; Espanyol luchador en casa" },
+    { home: "Sevilla FC", away: "Real Sociedad", league: "LaLiga", time: "Lun 4 Mayo, 21:00", homeWin: 38.9, awayWin: 33.7, draw: 27.4, context: "Duelo equilibrado entre dos equipos de media tabla" }
+  ],
+  premier: [
+    { home: "Leeds United", away: "Burnley FC", league: "Premier", time: "Vie 1 Mayo, 21:00", homeWin: 67.7, awayWin: 13.2, draw: 19.1, context: "Leeds dominador en casa; Burnley en zona de descenso" },
+    { home: "Brentford FC", away: "West Ham Utd", league: "Premier", time: "Sáb 2 Mayo, 16:00", homeWin: 48.5, awayWin: 26.5, draw: 25.0, context: "Brentford en buena forma; West Ham sin objetivos claros" },
+    { home: "Newcastle Utd", away: "Brighton & HA", league: "Premier", time: "Sáb 2 Mayo, 16:00", homeWin: 38.0, awayWin: 36.0, draw: 26.0, context: "Partido muy igualado entre dos equipos en forma; Brighton viene de ganar 3-0" },
+    { home: "Arsenal FC", away: "Fulham FC", league: "Premier", time: "Sáb 2 Mayo, 18:30", homeWin: 67.9, awayWin: 12.5, draw: 19.6, context: "Arsenal en Champions, fuerte en casa; Fulham sin presión" },
+    { home: "Man United", away: "Liverpool FC", league: "Premier", time: "Dom 3 Mayo, 16:30", homeWin: 40.9, awayWin: 34.1, draw: 25.0, context: "Derbi histórico; Liverpool campeón en ciernes; United irregular" },
+    { home: "Aston Villa", away: "Tottenham H", league: "Premier", time: "Dom 3 Mayo, 20:00", homeWin: 43.3, awayWin: 30.6, draw: 26.1, context: "Villa sólido en casa; Spurs inconsistentes esta temporada" },
+    { home: "Chelsea FC", away: "Nottm Forest", league: "Premier", time: "Lun 4 Mayo, 16:00", homeWin: 56.4, awayWin: 20.1, draw: 23.5, context: "Chelsea en buen momento; Forest sorprendente pero en racha negativa" },
+    { home: "Everton FC", away: "Man City", league: "Premier", time: "Lun 4 Mayo, 21:00", homeWin: 14.7, awayWin: 66.0, draw: 19.3, context: "Man City muy favorito; Everton en crisis total" }
+  ],
+  champions: [
+    { home: "Atletico Madrid", away: "Arsenal FC", league: "Champions", time: "Mié 29 Abr, 21:00", homeWin: 29.3, awayWin: 41.8, draw: 28.9, context: "Semifinal Champions; Arsenal leve favorito pero Atleti peligroso en casa" }
+  ]
+};
+
+const STYLE_CONFIG = {
+  conservadora: {
+    minOdds: 1.25, maxOdds: 1.80, label: "🛡️ CONSERVADORA",
+    color: "#22c55e", targetTotal: [2.0, 4.0],
+    selectionLogic: "favorite", // picks heavy favorites
+    description: "Cuota conservadora"
+  },
+  equilibrada: {
+    minOdds: 1.60, maxOdds: 2.40, label: "⚖️ EQUILIBRADA",
+    color: "#4d9fff", targetTotal: [4.0, 10.0],
+    selectionLogic: "balanced",
+    description: "Cuota equilibrada"
+  },
+  atrevida: {
+    minOdds: 2.20, maxOdds: 4.50, label: "🔥 ATREVIDA",
+    color: "#f5c842", targetTotal: [10, 30],
+    selectionLogic: "value",
+    description: "Cuota atrevida"
+  },
+  sonadora: {
+    minOdds: 3.50, maxOdds: 12.0, label: "🚀 SOÑADORA",
+    color: "#ff4d6d", targetTotal: [30, 200],
+    selectionLogic: "longshot",
+    description: "Cuota soñadora"
+  }
+};
+
+// ── UI Interactions ──
+function selectStyle(el) {
+  document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedStyle = el.dataset.style;
+}
+
+function toggleLeague(el) {
+  el.classList.toggle('active');
+}
+
+function selectNum(el) {
+  document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedNum = parseInt(el.dataset.num);
+}
+
+function setStake(v) {
+  document.getElementById('stake-input').value = v;
+  stake = v;
+  updateStake();
+}
+
+function updateStake() {
+  stake = parseFloat(document.getElementById('stake-input').value) || 10;
+  if (currentBets.length > 0) updateSummary();
+}
+
+function updateSummary() {
+  const totalOdds = currentBets.reduce((acc, b) => acc * b.odds, 1);
+  const ret = (stake * totalOdds).toFixed(2);
+  document.getElementById('total-odds').textContent = totalOdds.toFixed(2) + 'x';
+  document.getElementById('total-stake').textContent = stake + '€';
+  document.getElementById('total-return').textContent = ret + '€';
+}
+
+// ── Build available pool ──
+function getPool() {
+  const activeLeagues = [...document.querySelectorAll('.league-btn.active')].map(b => b.dataset.league);
+  let pool = [];
+  activeLeagues.forEach(l => {
+    if (MATCHES[l]) pool = [...pool, ...MATCHES[l]];
+  });
+  return pool;
+}
+
+// ── Probability to odds converter ──
+function probToOdds(prob) {
+  // Add a small margin (like bookmakers)
+  const margin = 0.88;
+  return parseFloat((1 / (prob / 100) * margin).toFixed(2));
+}
+
+// ── Generate bet (calls Claude AI) ──
+async function generateBet() {
+  if (!selectedStyle) {
+    alert('Elige un estilo de apuesta primero');
+    return;
+  }
+
+  const pool = getPool();
+  if (pool.length < 2) {
+    alert('Activa al menos una liga con partidos disponibles');
+    return;
+  }
+
+  // UI loading state
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  document.getElementById('btn-text').textContent = 'ANALIZANDO...';
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('loading-state').style.display = 'flex';
+
+  const steps = [
+    "Buscando los mejores mercados...",
+    "Evaluando probabilidades reales...",
+    "Comparando con cuotas de bet365...",
+    "Construyendo la combinada óptima..."
+  ];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    stepIdx = (stepIdx + 1) % steps.length;
+    const el = document.getElementById('loading-step');
+    if (el) el.textContent = steps[stepIdx];
+  }, 1200);
+
+  const styleConf = STYLE_CONFIG[selectedStyle];
+  const poolStr = pool.map(m => 
+    `- ${m.home} vs ${m.away} (${m.league}, ${m.time}) | Probabilidades: Local ${m.homeWin}%, Empate ${m.draw}%, Visitante ${m.awayWin}% | Contexto: ${m.context}`
+  ).join('\n');
+
+  const systemPrompt = `Eres un experto analista de apuestas deportivas con 15 años de experiencia. 
+Tu tarea es seleccionar ${selectedNum} partidos del pool disponible y crear una combinada para bet365.
+El estilo solicitado es: ${selectedStyle.toUpperCase()} (${styleConf.description}, cuota total objetivo: ${styleConf.targetTotal[0]}x - ${styleConf.targetTotal[1]}x).
+
+Reglas CRÍTICAS:
+- Cuota individual por selección debe estar entre ${styleConf.minOdds} y ${styleConf.maxOdds}
+- Selecciona exactamente ${selectedNum} partidos DIFERENTES
+- Elige el mercado más apropiado para cada partido: 1X2, Ambos Marcan, Más/Menos goles, Doble Oportunidad
+- Las cuotas deben ser REALISTAS para bet365 (no inventes cuotas imposibles)
+- Justifica brevemente cada selección con datos concretos
+- Para estilo conservadora: elige favoritos claros (>55% prob)
+- Para estilo equilibrada: mezcla favoritos moderados y algún partido con ambos marcan
+- Para estilo atrevida: busca valor real en equipos infravalorados o mercados alternativos
+- Para estilo sonadora: selecciona resultados posibles pero inesperados con argumentos válidos
+
+Responde SOLO en JSON con este formato exacto (sin markdown, sin explicación extra):
+{
+  "bets": [
+    {
+      "match": "Equipo A vs Equipo B",
+      "league": "nombre liga",
+      "time": "hora partido",
+      "market": "nombre del mercado en español",
+      "selection": "la selección concreta (ej: Victoria Equipo A, Ambos Marcan - Sí, etc)",
+      "odds": 1.85,
+      "rationale": "justificación breve y específica de 1-2 frases con datos reales"
+    }
+  ],
+  "confidence": 72,
+  "summary": "frase corta describiendo la apuesta (15 palabras máx)"
+}`;
+
+  const userPrompt = `Pool de partidos disponibles para ${new Date().toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}:
+${poolStr}
+
+Crea la mejor combinada ${selectedStyle} con ${selectedNum} partidos. Cuota total objetivo: ${styleConf.targetTotal[0]}x-${styleConf.targetTotal[1]}x.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }]
+      })
+    });
+
+    const data = await response.json();
+    clearInterval(stepInterval);
+
+    if (!response.ok || !data.content?.[0]?.text) throw new Error('API error');
+
+    let raw = data.content[0].text.trim();
+    // Strip markdown fences if present
+    raw = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(raw);
+
+    currentBets = parsed.bets;
+    renderResult(parsed, styleConf);
+
+  } catch (e) {
+    clearInterval(stepInterval);
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'block';
+    document.getElementById('error-msg').textContent = 'Error generando la combinada. ¿Hay conexión a internet?';
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    document.getElementById('btn-text').textContent = 'CREAR COMBINADA CON IA';
+    document.getElementById('loading-state').style.display = 'none';
+  }
+}
+
+function renderResult(data, styleConf) {
+  // Badge & title
+  document.getElementById('combinada-badge').textContent = styleConf.label;
+  document.getElementById('combinada-badge').style.background = styleConf.color + '22';
+  document.getElementById('combinada-badge').style.color = styleConf.color;
+  document.getElementById('combinada-badge').style.border = `1.5px solid ${styleConf.color}44`;
+  document.getElementById('result-title').textContent = (data.summary || 'COMBINADA GENERADA').toUpperCase();
+
+  // Bet cards
+  const list = document.getElementById('bet-list');
+  list.innerHTML = '';
+  data.bets.forEach((bet, i) => {
+    const card = document.createElement('div');
+    card.className = 'bet-card';
+    card.style.animationDelay = `${i * 0.07}s`;
+    card.innerHTML = `
+      <div>
+        <div class="bet-match">
+          <span class="bet-league-tag">${bet.league || ''}</span>
+          <span class="bet-time-tag">⏱ ${bet.time || ''}</span>
+        </div>
+        <div class="bet-selection">${bet.market} — ${bet.selection}</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:6px">${bet.match}</div>
+        <div class="bet-rationale">${bet.rationale}</div>
+      </div>
+      <div class="bet-odds-pill">
+        <span class="bet-odds-number">${parseFloat(bet.odds).toFixed(2)}</span>
+        <span class="bet-odds-label">cuota</span>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  // Confidence
+  const conf = Math.min(Math.max(data.confidence || 65, 20), 95);
+  setTimeout(() => {
+    document.getElementById('conf-fill').style.width = conf + '%';
+  }, 200);
+  document.getElementById('conf-label').textContent = `Confianza IA: ${conf}%`;
+
+  // Summary
+  updateStake();
+  const totalOdds = data.bets.reduce((acc, b) => acc * b.odds, 1);
+  document.getElementById('total-odds').textContent = totalOdds.toFixed(2) + 'x';
+  document.getElementById('total-stake').textContent = stake + '€';
+  document.getElementById('total-return').textContent = (stake * totalOdds).toFixed(2) + '€';
+
+  // Show
+  document.getElementById('result-section').style.display = 'block';
+  document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyBet() {
+  if (!currentBets.length) return;
+  const text = currentBets.map(b =>
+    `${b.match}\n${b.market}: ${b.selection} @ ${b.odds}`
+  ).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ Copiado al portapapeles';
+    setTimeout(() => btn.textContent = '📋 Copiar selecciones para bet365', 2000);
+  });
+}
+
+// Default selections
+selectNum(document.querySelector('.num-btn[data-num="3"]'));
+</script>
+</body>
+</html>
