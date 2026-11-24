@@ -93,6 +93,8 @@ export interface PublicConfig {
     lines: string[];
     suspense: string[];
     cta: string;
+    /** Last screen, after the gift: a personal dedication. */
+    dedication: { button: string; kicker: string; lines: string[] };
   };
   avatars: { her: AvatarArt; him: AvatarArt };
 }

@@ -67,6 +67,7 @@ export function validateConfig(c: unknown): string[] {
     if (!cfg[k] || typeof cfg[k] !== "object") errs.push(`Falta la sección "${k}"`);
   }
   if (errs.length) return errs;
+  if (cfg.finale && !cfg.finale.dedication) cfg.finale.dedication = { button: "", kicker: "", lines: [] };
   arr(cfg.stops, "stops");
   if (!Array.isArray(cfg.stops)) return errs;
   if (cfg.stops.length < 2) errs.push("Hace falta al menos un origen y un destino.");

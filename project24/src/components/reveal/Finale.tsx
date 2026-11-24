@@ -6,7 +6,7 @@ import { Character } from "@/components/characters/Character";
 import { ApiError, type Api } from "@/lib/api";
 import type { PublicConfig, RevealPayload } from "@/game/types";
 
-type Step = "made" | "suspense" | "reveal";
+type Step = "made" | "suspense" | "reveal" | "dedication";
 
 export function Finale({ config, api, onSfx }: { config: PublicConfig; api: Api; onSfx: (s: "reveal" | "whoosh" | "tap") => void }) {
   const { finale, meta, avatars } = config;
@@ -118,7 +118,32 @@ export function Finale({ config, api, onSfx }: { config: PublicConfig; api: Api;
             animate={{ clipPath: "inset(0% 0 0% 0)" }}
             transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
           >
-            <RevealView r={reveal} meta={meta} avatars={avatars} />
+            <RevealView
+              r={reveal}
+              meta={meta}
+              avatars={avatars}
+              nextLabel={finale.dedication?.button}
+              onNext={
+                finale.dedication?.lines?.length
+                  ? () => {
+                      onSfx("tap");
+                      setStep("dedication");
+                    }
+                  : undefined
+              }
+            />
+          </motion.section>
+        )}
+
+        {step === "dedication" && finale.dedication && (
+          <motion.section
+            key="dedication"
+            className="absolute inset-0 overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.4 }}
+          >
+            <Dedication d={finale.dedication} meta={meta} avatars={avatars} />
           </motion.section>
         )}
       </AnimatePresence>
@@ -165,7 +190,19 @@ function Suspense({ lines, error, onRetry }: { lines: string[]; error: string | 
   );
 }
 
-function RevealView({ r, meta, avatars }: { r: RevealPayload; meta: PublicConfig["meta"]; avatars: PublicConfig["avatars"] }) {
+function RevealView({
+  r,
+  meta,
+  avatars,
+  onNext,
+  nextLabel,
+}: {
+  r: RevealPayload;
+  meta: PublicConfig["meta"];
+  avatars: PublicConfig["avatars"];
+  onNext?: () => void;
+  nextLabel?: string;
+}) {
   const ease = [0.22, 1, 0.36, 1] as const;
   const art = r.image ? (
     // eslint-disable-next-line @next/next/no-img-element
@@ -226,6 +263,18 @@ function RevealView({ r, meta, avatars }: { r: RevealPayload; meta: PublicConfig
         <p className="label opacity-60 mt-2">
           {meta.place} · {meta.year}
         </p>
+        {onNext && (
+          <motion.button
+            onClick={onNext}
+            className="mt-5 inline-flex items-center gap-3 rounded-full px-5 py-3 label !text-[11px]"
+            style={{ border: `1px solid ${r.palette.fg}55` }}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 4.5, duration: 0.8 }}
+          >
+            {nextLabel || "UNA ÚLTIMA COSA"} <span aria-hidden>→</span>
+          </motion.button>
+        )}
       </div>
       <div className="flex items-end -mb-2">
         <Character variant="her" pose="celebrating" size={96} art={avatars.her} />
@@ -284,4 +333,73 @@ function RevealView({ r, meta, avatars }: { r: RevealPayload; meta: PublicConfig
         </div>
       );
   }
+}
+
+function Dedication({
+  d,
+  meta,
+  avatars,
+}: {
+  d: PublicConfig["finale"]["dedication"];
+  meta: PublicConfig["meta"];
+  avatars: PublicConfig["avatars"];
+}) {
+  const ease = [0.22, 1, 0.36, 1] as const;
+  const start = 0.9;
+  const step = 1.7;
+  const end = start + d.lines.length * step;
+  return (
+    <div className="grain relative min-h-dvh bg-paper text-ink flex flex-col items-center justify-center px-7 py-[max(2.5rem,env(safe-area-inset-top))] text-center">
+      <motion.div
+        className="absolute inset-4 sm:inset-8 border border-ink/10 pointer-events-none"
+        initial={{ opacity: 0, scale: 1.02 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.6, ease }}
+      />
+      <motion.p className="label text-accent" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }}>
+        {d.kicker}
+      </motion.p>
+
+      <div className="mt-8 max-w-3xl space-y-3 sm:space-y-5">
+        {d.lines.map((l, i) => {
+          const last = i === d.lines.length - 1;
+          return (
+            <div key={i} className="overflow-hidden">
+              <motion.p
+                className={`display leading-[0.95] ${
+                  i === 0 ? "text-[13vw] sm:text-[6.5rem]" : last ? "italic text-[11vw] sm:text-[5.5rem] text-accent" : "italic text-[8vw] sm:text-[3.6rem] text-ink/80"
+                }`}
+                initial={{ y: "105%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: start + i * step, duration: 1.3, ease }}
+              >
+                {l}
+              </motion.p>
+            </div>
+          );
+        })}
+      </div>
+
+      <motion.div
+        className="mt-10 flex items-end justify-center"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: end, duration: 1.2, ease }}
+      >
+        <Character variant="her" pose="happy" size={150} art={avatars.her} />
+        <div className="-ml-3">
+          <Character variant="him" pose="happy" facing="left" size={150} art={avatars.him} />
+        </div>
+      </motion.div>
+
+      <motion.p
+        className="label text-ink/45 mt-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: end + 0.8, duration: 1 }}
+      >
+        {meta.title} · {meta.place} · {meta.year}
+      </motion.p>
+    </div>
+  );
 }

@@ -241,6 +241,11 @@ export const DEFAULT_CONFIG: GameConfig = {
     ],
     suspense: ["Procesando decisiones…", "Consultando con la dirección…", "Vale. Ya está."],
     cta: "VER RESULTADO",
+    dedication: {
+      button: "UNA ÚLTIMA COSA",
+      kicker: "Para Carlota",
+      lines: ["Felices 24, Carlotix.", "Por verte cumplir muchos más.", "Te quiero."],
+    },
   },
 
   avatars: {
