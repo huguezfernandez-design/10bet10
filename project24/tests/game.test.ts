@@ -25,7 +25,7 @@ function play(choices: string[]) {
 
 describe("game state machine", () => {
   it("completes a full game and decides the gift on the server", () => {
-    const d = play(["b", "c", "d", "a"]); // COMEDY 3, DINNER 3, DINNER 3, WINE 3
+    const d = play(["b", "c", "b", "a"]); // DINNER 3, GETAWAY 3, DINNER 3, WINE 3
     expect(d.stage).toBe("finished");
     expect(d.result?.gift).toBe("DINNER");
     expect(d.result?.scores.DINNER).toBe(6);
@@ -33,10 +33,10 @@ describe("game state machine", () => {
   });
 
   it.each([
-    [["d", "b", "b", "c"], "GETAWAY"],
-    [["b", "a", "c", "d"], "COMEDY"],
-    [["c", "d", "a", "a"], "WINE"],
-    [["a", "c", "d", "b"], "DINNER"],
+    [["a", "c", "d", "c"], "GETAWAY"],
+    [["c", "a", "c", "d"], "COMEDY"],
+    [["d", "b", "a", "a"], "WINE"],
+    [["b", "d", "b", "b"], "DINNER"],
   ])("answers %j lead to %s", (choices, gift) => {
     expect(play(choices as string[]).result?.gift).toBe(gift);
   });
