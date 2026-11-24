@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: var(--p24-paper, #F3F0E9);
+  --color-ink: var(--p24-ink, #171717);
+  --color-warm: var(--p24-warm, #B9B3A8);
+  --color-snow: var(--p24-white, #FFFFFF);
+  --color-accent: var(--p24-accent, #B4532A);
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-sans: "Inter Tight Variable", "Inter Tight", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+:root {
+  --p24-paper: #F3F0E9;
+  --p24-ink: #171717;
+  --p24-warm: #B9B3A8;
+  --p24-white: #FFFFFF;
+  --p24-accent: #B4532A;
+  color-scheme: light;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--p24-paper);
+  color: var(--p24-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.01em; line-height: 0.92; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: .75rem;
+  background: var(--p24-ink); color: var(--p24-paper);
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+  padding: 1.05rem 1.6rem; border-radius: 999px;
+  transition: transform .2s ease, background .2s ease, opacity .2s;
+}
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(1px) scale(.99); }
+.btn-primary:disabled { opacity: .4; pointer-events: none; }
+.btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  border: 1px solid color-mix(in oklab, var(--p24-ink) 25%, transparent);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  padding: .85rem 1.2rem; border-radius: 999px; transition: background .2s;
+}
+.btn-ghost:hover { background: color-mix(in oklab, var(--p24-ink) 6%, transparent); }
+
+/* ───────── Character rig poses ───────── */
+.rig .rig-arm, .rig .rig-leg, .rig .rig-figure, .rig .rig-head, .rig .rig-torso { transform-box: fill-box; }
+.rig .rig-arm { transform-origin: 50% 6%; transition: transform .45s cubic-bezier(.3,.7,.2,1); }
+.rig .rig-leg { transform-origin: 50% 0%; transition: transform .3s ease; }
+.rig .rig-figure { transform-origin: 50% 100%; }
+.rig .rig-head { transform-origin: 50% 90%; }
+
+.rig[data-pose="idle"] .rig-arm-l, .rig[data-pose="happy"] .rig-arm-l { transform: rotate(7deg); }
+.rig[data-pose="idle"] .rig-arm-r, .rig[data-pose="happy"] .rig-arm-r { transform: rotate(-7deg); }
+.rig[data-pose="idle"] .rig-figure { animation: rig-breathe 3.2s ease-in-out infinite; }
+.rig[data-pose="idle"] .rig-head { animation: rig-tilt 6s ease-in-out infinite; }
+
+.rig[data-pose="walking"] .rig-arm-l { animation: rig-swing .5s ease-in-out infinite alternate; }
+.rig[data-pose="walking"] .rig-arm-r { animation: rig-swing .5s ease-in-out infinite alternate-reverse; }
+.rig[data-pose="walking"] .rig-leg-l { animation: rig-step .5s ease-in-out infinite alternate; }
+.rig[data-pose="walking"] .rig-leg-r { animation: rig-step .5s ease-in-out infinite alternate-reverse; }
+.rig[data-pose="walking"] .rig-figure { animation: rig-bob .25s ease-in-out infinite alternate; }
+
+.rig[data-pose="celebrating"] .rig-arm-l { transform: rotate(152deg); }
+.rig[data-pose="celebrating"] .rig-arm-r { transform: rotate(-152deg); }
+.rig[data-pose="celebrating"] .rig-figure { animation: rig-jump .7s cubic-bezier(.3,.6,.4,1) infinite; }
+.rig[data-pose="celebrating"] .rig-shadow { animation: rig-shadow .7s cubic-bezier(.3,.6,.4,1) infinite; transform-box: fill-box; transform-origin: center; }
+
+.rig[data-pose="surprised"] .rig-arm-l { transform: rotate(128deg); }
+.rig[data-pose="surprised"] .rig-arm-r { transform: rotate(-128deg); }
+.rig[data-pose="surprised"] .rig-figure { animation: rig-hop .5s ease-out 1; }
+
+.rig[data-pose="happy"] .rig-figure { animation: rig-bounce 1.1s ease-in-out infinite; }
+
+.rig[data-pose="greeting"] .rig-arm-l { transform: rotate(6deg); }
+.rig[data-pose="greeting"] .rig-arm-r { animation: rig-wave .9s ease-in-out infinite; }
+.rig[data-pose="greeting"] .rig-head { transform: rotate(4deg); }
+
+@keyframes rig-breathe { 0%,100% { transform: scaleY(1) } 50% { transform: scaleY(1.012) translateY(-.5px) } }
+@keyframes rig-tilt { 0%,100% { transform: rotate(0) } 40% { transform: rotate(2.5deg) } 70% { transform: rotate(-1.5deg) } }
+@keyframes rig-swing { from { transform: rotate(-24deg) } to { transform: rotate(24deg) } }
+@keyframes rig-step { from { transform: rotate(-18deg) } to { transform: rotate(18deg) } }
+@keyframes rig-bob { from { transform: translateY(0) } to { transform: translateY(-3px) } }
+@keyframes rig-jump { 0%,100% { transform: translateY(0) scaleY(1) } 15% { transform: translateY(0) scaleY(.95) } 50% { transform: translateY(-16px) scaleY(1.03) } }
+@keyframes rig-shadow { 0%,100% { transform: scale(1); opacity: 1 } 50% { transform: scale(.7); opacity: .5 } }
+@keyframes rig-hop { 0% { transform: translateY(0) } 40% { transform: translateY(-8px) } 100% { transform: translateY(0) } }
+@keyframes rig-bounce { 0%,100% { transform: translateY(0) rotate(0) } 25% { transform: translateY(-4px) rotate(-2deg) } 75% { transform: translateY(-4px) rotate(2deg) } }
+@keyframes rig-wave { 0%,100% { transform: rotate(-118deg) } 50% { transform: rotate(-148deg) } }
+
+/* ───────── Map ambient life ───────── */
+.amb-cloud { animation: amb-drift 70s linear infinite; }
+.amb-cloud.slow { animation-duration: 110s; }
+.amb-wave { animation: amb-wave 6s ease-in-out infinite; }
+.amb-boat { animation: amb-boat 4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.amb-bird { animation: amb-bird 18s linear infinite; }
+.amb-pulse { animation: amb-pulse 2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.amb-flag { animation: amb-flag 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 50%; }
+.amb-light { animation: amb-light 3s ease-in-out infinite; }
+@keyframes amb-drift { from { transform: translateX(-140px) } to { transform: translateX(140px) } }
+@keyframes amb-wave { 0%,100% { transform: translateX(0); opacity: .55 } 50% { transform: translateX(6px); opacity: .25 } }
+@keyframes amb-boat { 0%,100% { transform: rotate(-4deg) translateY(0) } 50% { transform: rotate(4deg) translateY(-1px) } }
+@keyframes amb-bird { 0% { transform: translate(0,0) } 50% { transform: translate(60px,-14px) } 100% { transform: translate(120px,0) } }
+@keyframes amb-pulse { 0% { transform: scale(.6); opacity: .9 } 100% { transform: scale(2.2); opacity: 0 } }
+@keyframes amb-flag { 0%,100% { transform: skewY(0) scaleX(1) } 50% { transform: skewY(6deg) scaleX(.9) } }
+@keyframes amb-light { 0%,100% { opacity: .25 } 50% { opacity: .85 } }
+
+/* reveal art */
+.g-float { animation: g-float 4s ease-in-out infinite; }
+.g-flicker { animation: g-flicker 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.g-beam { animation: g-beam 3s ease-in-out infinite; }
+.g-swirl { animation: g-swirl 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes g-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+@keyframes g-flicker { 0%,100% { transform: scaleY(1) } 50% { transform: scaleY(.8) skewX(4deg) } }
+@keyframes g-beam { 0%,100% { opacity: .2 } 50% { opacity: .5 } }
+@keyframes g-swirl { 0%,100% { transform: rotate(0) } 50% { transform: rotate(2deg) } }
+
+.grain::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .amb-cloud, .amb-wave, .amb-boat, .amb-bird, .amb-flag, .amb-light, .g-float, .g-flicker, .g-beam, .g-swirl { animation: none !important; }
+}
