@@ -7,7 +7,7 @@ import { GameError, loadGame, publicState } from "@/server/games";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "PROJECT 24 — The Road to Madrid",
+  title: "TOTI 24 — The Road to Madrid",
   robots: { index: false, follow: false },
 };
 

@@ -37,7 +37,7 @@ export function AdminGate({ disabled }: { disabled?: boolean }) {
   return (
     <main className="min-h-dvh grid place-items-center px-6">
       <form onSubmit={submit} className="w-full max-w-sm">
-        <p className="label text-ink/50">PROJECT 24 · Control room</p>
+        <p className="label text-ink/50">TOTI 24 · Control room</p>
         <h1 className="display text-5xl mt-3">Acceso</h1>
         <input
           type="password"

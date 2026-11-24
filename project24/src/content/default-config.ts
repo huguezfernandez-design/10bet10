@@ -3,7 +3,7 @@ import type { GameConfig } from "@/server/config-types";
 
 /**
  * ─────────────────────────────────────────────────────────────
- *  PROJECT 24 — CONTENIDO POR DEFECTO
+ *  TOTI 24 — CONTENIDO POR DEFECTO
  * ─────────────────────────────────────────────────────────────
  *  Todo el contenido editable del juego vive aquí: textos, ciudades,
  *  adivinanzas, objetos, preguntas, puntuaciones y regalos.
@@ -19,7 +19,7 @@ import type { GameConfig } from "@/server/config-types";
  */
 export const DEFAULT_CONFIG: GameConfig = {
   meta: {
-    title: "PROJECT 24",
+    title: "TOTI 24",
     subtitle: "THE ROAD TO MADRID",
     tagline: "24 años. Un viaje pendiente. Cuatro misiones por completar.",
     place: "MADRID",

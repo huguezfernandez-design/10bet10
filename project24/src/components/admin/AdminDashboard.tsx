@@ -280,7 +280,7 @@ export function AdminNav({ active, onLogout }: { active: "games" | "content"; on
   return (
     <nav className="flex flex-wrap items-center gap-3 justify-between">
       <div>
-        <p className="label text-ink/50">PROJECT 24</p>
+        <p className="label text-ink/50">TOTI 24</p>
         <p className="display text-4xl leading-none mt-1">Control room</p>
       </div>
       <div className="flex gap-2">

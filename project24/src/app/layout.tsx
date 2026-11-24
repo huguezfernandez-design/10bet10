@@ -6,7 +6,7 @@ import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PROJECT 24 — The Road to Madrid",
+  title: "TOTI 24 — The Road to Madrid",
   description: "Un viaje privado.",
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
   referrer: "no-referrer",

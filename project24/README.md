@@ -1,4 +1,4 @@
-# PROJECT 24 — THE ROAD TO MADRID
+# TOTI 24 — THE ROAD TO MADRID
 
 Un pequeño videojuego web, hecho a medida como regalo de 24 cumpleaños.
 La protagonista viaja de **Gijón a Madrid** por un mapa ilustrado de España (León → Valladolid → Segovia → Madrid).
