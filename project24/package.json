@@ -10,7 +10,8 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "geo": "node scripts/build-geo.mjs",
-    "create-game": "node scripts/create-game.mjs"
+    "create-game": "node scripts/create-game.mjs",
+    "preview:build": "node scripts/build-preview.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",
@@ -29,6 +30,7 @@
     "@types/node": "^26.6.7",
     "@types/react": "^19.3.1",
     "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
     "postcss": "^8.5.33",
     "tailwindcss": "^4.3.5",
     "topojson-client": "^3.1.0",
