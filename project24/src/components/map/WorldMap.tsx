@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useTransform, type MotionValue } from "motion/react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
+import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState, type Ref } from "react";
 import { Character } from "@/components/characters/Character";
 import { WORLD_H, WORLD_W } from "@/game/projection";
 import { segmentPath, stopPoint, type Pt } from "@/game/route";
@@ -143,7 +143,7 @@ export function WorldMap({
         const bh = Math.max(...ys) - Math.min(...ys) + 110;
         return Math.min(W / bw, H / bh);
       }
-      const near = clamp(Math.min(W, H) / 135, 2.1, 6);
+      const near = clamp(Math.min(W, H) / 135, 2.1, 3.8);
       return mode === "close" ? near * 1.55 : near;
     },
     [pts, view],
@@ -163,6 +163,7 @@ export function WorldMap({
       const tz = zoomFor(mode);
       const v = view();
       if (duration === 0) {
+        [cx, cy, z, ax, ay].forEach((mv) => owners.set(mv, Symbol()));
         cx.set(target.x);
         cy.set(target.y);
         z.set(tz);
@@ -235,6 +236,11 @@ export function WorldMap({
   );
 
   /* ───────── resize ───────── */
+  // measure synchronously before any camera move is computed
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (el) size.current = { w: el.clientWidth, h: el.clientHeight };
+  }, []);
   useEffect(() => {
     const el = box.current;
     if (!el) return;

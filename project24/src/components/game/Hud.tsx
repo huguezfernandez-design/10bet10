@@ -77,8 +77,8 @@ export function MapControls({
     "size-10 grid place-items-center rounded-full bg-paper/90 backdrop-blur border border-ink/10 text-ink shadow-sm hover:bg-snow active:scale-95 transition";
   return (
     <div
-      className={`fixed right-3 sm:right-5 top-[calc(max(.75rem,env(safe-area-inset-top))+64px)] z-20 flex-col gap-2 ${
-        compactHidden ? "hidden min-[900px]:flex min-[900px]:right-[488px]" : "flex"
+      className={`fixed left-3 sm:left-5 top-[calc(max(.75rem,env(safe-area-inset-top))+64px)] z-20 flex-col gap-2 ${
+        compactHidden ? "hidden min-[900px]:flex" : "flex"
       }`}
     >
       <button className={btn} onClick={onZoomIn} aria-label="Acercar">
@@ -147,9 +147,9 @@ export function Panel({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 40, opacity: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed z-20 inset-x-0 bottom-0 max-h-[78dvh] min-[900px]:inset-x-auto min-[900px]:right-6 min-[900px]:top-24 min-[900px]:bottom-6 min-[900px]:w-[440px] min-[900px]:max-h-none"
+      className="fixed z-20 inset-x-0 bottom-0 max-h-[78dvh] min-[900px]:inset-x-auto min-[900px]:right-6 min-[900px]:top-24 min-[900px]:bottom-auto min-[900px]:w-[440px] min-[900px]:max-h-[calc(100dvh-8rem)]"
     >
-      <div className="h-full max-h-[inherit] overflow-y-auto no-scrollbar rounded-t-[28px] min-[900px]:rounded-[28px] bg-paper border border-ink/10 shadow-[0_-20px_60px_-20px_rgba(23,23,23,.35)] px-5 sm:px-7 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <div className="max-h-[inherit] overflow-y-auto no-scrollbar rounded-t-[28px] min-[900px]:rounded-[28px] bg-paper border border-ink/10 shadow-[0_-20px_60px_-20px_rgba(23,23,23,.35)] px-5 sm:px-7 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-ink/15 min-[900px]:hidden" />
         {children}
       </div>

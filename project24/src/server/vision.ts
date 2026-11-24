@@ -80,7 +80,7 @@ export async function verifyWithClaude(
   image: { data: Uint8Array; mime: ImageMime },
   mission: SecretMission,
 ): Promise<VisionVerdict> {
-  const client = new Anthropic({ timeout: 45_000, maxRetries: 2 });
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 45_000, maxRetries: 2 });
   const model = visionModel();
 
   const prompt = `Mission riddle (for context): ${mission.riddle.join(" ")}
