@@ -66,7 +66,12 @@ export async function POST(req: Request, ctx: { params: Promise<{ token: string 
         d.missions[d.level - 1].errors += 1;
       });
       const detail =
-        err instanceof Anthropic.APIError ? `${err.status ?? "?"} ${err.name}` : err instanceof Error ? err.message : String(err);
+        err instanceof Anthropic.APIError
+          ? `${err.status ?? "?"} ${err.name}: ${err.message}`.slice(0, 500)
+          : err instanceof Error
+            ? err.message.slice(0, 500)
+            : String(err);
+      console.error("[toti24] vision error:", detail);
       await store.logEvent(rec.id, "verify_error", { level, detail });
       const busy = err instanceof Anthropic.RateLimitError || (err instanceof Anthropic.APIError && (err.status ?? 0) >= 500);
       throw new GameError(502, "vision_error", busy ? "El analista está saturado. Prueba otra vez en unos segundos." : "No he podido analizar la foto. Inténtalo de nuevo.");
