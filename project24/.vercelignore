@@ -1,0 +1,9 @@
+node_modules
+.next
+.data
+preview
+.env
+.env.local
+test-results
+AGENTS.md
+*.tsbuildinfo
