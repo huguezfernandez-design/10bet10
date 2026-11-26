@@ -102,6 +102,7 @@ describe("config + helpers", () => {
     expect(t.length).toBeGreaterThanOrEqual(32);
     expect(isTokenShaped(t)).toBe(true);
     expect(isTokenShaped("../etc")).toBe(false);
+    for (let i = 0; i < 200; i++) expect(newToken()).toMatch(/^[A-Za-z0-9]{32}$/);
   });
   it("sniffs image formats from magic bytes", () => {
     expect(sniffImage(new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0, 0, 0]))).toBe("image/jpeg");

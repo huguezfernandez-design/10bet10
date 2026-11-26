@@ -8,9 +8,21 @@ import { applyAction, applyAnswer, freshData, GameError, markVerified, requireSt
 
 export { applyAction, applyAnswer, freshData, GameError, markVerified, requireStage, type Action };
 
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+
+/**
+ * 32 random letters/digits (~185 bits). Only alphanumerics, so messaging apps
+ * (WhatsApp, iMessage…) never cut the link at a trailing "-" or "_".
+ */
 export function newToken(): string {
-  // 192 bits of entropy, URL-safe
-  return randomBytes(24).toString("base64url");
+  const bytes = randomBytes(64);
+  let out = "";
+  for (const b of bytes) {
+    if (b >= 232) continue; // 232 = 4 * 58, avoids modulo bias
+    out += ALPHABET[b % ALPHABET.length];
+    if (out.length === 32) return out;
+  }
+  return out + newToken().slice(0, 32 - out.length);
 }
 
 export function isTokenShaped(token: string): boolean {
